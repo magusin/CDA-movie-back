@@ -12,8 +12,10 @@ app.use(cors(corsOptions));
 /* Commande pour faire comprendre à express le json */
 app.use(express.json());
 
-const movieRouter = require('./app/routes/movie.route');
+const movieRouter = require('./routes/movie.route');
 app.use('/movie', movieRouter);
+const actorRouter = require('./routes/actor.route');
+app.use('/actor', actorRouter);
 
 /* Express ecoute sur ce port en permanance */
 app.listen(3000, () => {

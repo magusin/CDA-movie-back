@@ -16,9 +16,10 @@ if (config.use_env_variable) {
     sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-sequelize.sync({ force: true }).then(() => {
-    console.log("Drop and re-sync db.");
-});
+/* Reset DB */
+// sequelize.sync({ force: true }).then(() => {
+//     console.log("Drop and re-sync db.");
+// });
 
 fs
     .readdirSync(__dirname)

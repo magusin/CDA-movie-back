@@ -1,5 +1,10 @@
 /* Modèle utilisé */
+const Actor = require('../models').Actor;
 const Movie = require('../models').Movie;
+const Director = require('../models').Director;
+const Genre = require('../models').Genre;
+const Producer = require('../models').Producer;
+const Pegi = require('../models').Pegi;
 
 /* Constante pour faire des opérations */
 const { Op } = require('sequelize');
@@ -25,37 +30,27 @@ exports.detail_movie = (req, res, next) => {
         .catch(err => console.log(err))
 }
 
-// exports.search_movie = (req, res, next) => {
-//     const search = `%${req.params.search}%`;
-//     Movie.findAll({
-//         attributes: ['id', 'name', 'price', 'description'],
-//         // include: [
-//         //     {
-//         //         model: Category,
-//         //         attributes: ['id', 'name']
-//         //     }
-//         // ],
-//         where: {
-//             [Op.or]: [{
-//                 name: {
-//                     [Op.like]: search
-//                 }
-//             }, {
-//                 price: {
-//                     [Op.like]: search,
-//                     [Op.lt]: 50
-//                 }
-//             }]
-//         },
-//         order: [
-//             ['price', 'DESC']
-//         ]
-//     })
-//         .then(data => {
-//             res.status(200).json(data);
-//         })
-//         .catch(err => console.log(err))
-// }
+exports.add_actor = (req, res, next) => {
+    Movie.findByPk(req.body.movie_id)
+        .then((movie) => {
+            if (!movie) {
+                res.status(200).json({ message: 'movie not found!' });
+            }
+            Actor.findByPk(req.body.actor_id).then((actor) => {
+                if (!actor) {
+                    res.status(200).json({ message: 'actor not found!' });
+                }
+
+                movie.addActor(actor);
+
+                res.status(201).json({
+                    message: `>> added actor id=${actor.id} to movie id=${movie.id}`,
+                    data: movie
+                })
+            });
+        })
+        .catch(err => console.log(err))
+};
 
 exports.add_movie = (req, res, next) => {
     Movie.create(req.body)
