@@ -12,29 +12,20 @@ exports.related = (tab) => {
             model: Actor,
             as: "actors",
             attributes: ["id", "name"],
-            through: {
-                attributes: [],
-            },
         })
     }
     if (tab.includes("Pegi")) {
         relatedTab.push({
             model: Pegi,
-            as: "pegis",
+            as: "pegi",
             attributes: ["id", "name", "age_min"],
-            through: {
-                attributes: [],
-            },
         })
     }
     if (tab.includes("Director")) {
         relatedTab.push({
             model: Director,
-            as: "directors",
+            as: "director",
             attributes: ["id", "name"],
-            through: {
-                attributes: [],
-            },
         })
     }
     if (tab.includes("Movie")) {
@@ -42,30 +33,58 @@ exports.related = (tab) => {
             model: Movie,
             as: "movies",
             attributes: ["id", "title"],
-            through: {
-                attributes: [],
-            },
         })
     }
     if (tab.includes("Producer")) {
         relatedTab.push({
             model: Producer,
-            as: "producers",
+            as: "producer",
             attributes: ["id", "name"],
-            through: {
-                attributes: [],
-            },
         })
     }
     if (tab.includes("Genre")) {
         relatedTab.push({
             model: Genre,
-            as: "genres",
+            as: "genre",
             attributes: ["id", "name"],
-            through: {
-                attributes: [],
-            },
         })
     }
     return relatedTab;
+}
+
+exports.checkIfDataExist = async (dataId, tableName) => {
+    let response = {
+        error: false,
+        message: ""
+    }
+    let table;
+    switch (tableName) {
+        case "Genre":
+            table = Genre;
+            break;
+        case "Movie":
+            table = Movie;
+            break;
+        case "Producer":
+            table = Producer;
+            break;
+        case "Director":
+            table = Director;
+            break;
+        case "Pegi":
+            table = Pegi;
+            break;
+        case "Actor":
+            table = Actor;
+            break;
+        default:
+            break;
+    }
+    await table.findByPk(dataId).then((data) => {
+        if (!data) {
+            response.error = true
+            response.message = `${tableName} not found! `
+        }
+    })
+    return response;
 }
