@@ -8,19 +8,27 @@ const Pegi = require('../models').Pegi;
 
 /* Constante pour faire des opérations */
 const { Op } = require('sequelize');
+const { related } = require('./service-controller');
 
 exports.list_movie = (req, res, next) => {
     // Cherche dans la bdd toutes les entrees du modele Movie / asynchrone
     // SELECT * FROM Movie
-    Movie.findAll({})
+    Movie.findAll({}, {
+        include: related["Actor"],
+    })
         .then(monresultat => {
-            res.status(200).json(monresultat);
+            res.status(200).json({
+                message: 'Movie detail',
+                data: monresultat
+            });
         })
         .catch(err => console.log(err))
 }
 
 exports.detail_movie = (req, res, next) => {
-    Movie.findByPk(req.params.id)
+    Movie.findByPk(req.params.id, {
+        include: related["Actor"],
+    })
         .then(data => {
             res.status(200).json({
                 message: 'Movie detail',

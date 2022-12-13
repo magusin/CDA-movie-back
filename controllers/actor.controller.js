@@ -4,6 +4,7 @@ const Movie = require('../models').Movie;
 
 /* Constante pour faire des opérations */
 const { Op } = require('sequelize');
+const { related } = require('./service-controller');
 
 exports.list_actor = (req, res, next) => {
     Actor.findAll({})
@@ -15,16 +16,7 @@ exports.list_actor = (req, res, next) => {
 
 exports.detail_actor = (req, res, next) => {
     Actor.findByPk(req.params.id, {
-        include: [
-            {
-                model: Movie,
-                as: "movies",
-                attributes: ["id", "title"],
-                through: {
-                    attributes: [],
-                },
-            },
-        ],
+        include: related("Movie"),
     })
         .then(data => {
             res.status(200).json({
